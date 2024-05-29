@@ -67,7 +67,7 @@ for x in range(0, args.x_tiles):
 
                 path = os.path.join(args.directory, f"tile_{i}.ply")
                 
-                PlyData([element], text=True).write(path)
+                PlyData([element]).write(path)
 
                 i += 1
 
