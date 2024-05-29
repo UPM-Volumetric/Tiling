@@ -74,9 +74,9 @@ for x in range(0, args.x_tiles):
                 # Update the manifest
 
                 # Get the center of the tiles
-                xx = (x * x_size) + (x_size / 2)
-                yy = (y * y_size) + (y_size / 2)
-                zz = (z * z_size) + (z_size / 2)
+                xx = (x * x_size) + (x_size / 2) + x_min
+                yy = (y * y_size) + (y_size / 2) + y_min
+                zz = (z * z_size) + (z_size / 2) + z_min
 
                 manifest["tiles"].append({
                     "x": xx,
