@@ -8,11 +8,11 @@ from plyfile import PlyData, PlyElement
 # Arguments
 parser = argparse.ArgumentParser(description="Cuts a point cloud file into uniform tiles.")
 
-parser.add_argument("file", help="The point cloud file to tile. Only PLY files (.ply) are supported.")
+parser.add_argument("file", help="The point cloud file to tile. Only PLY files (.ply) are supported (ASCII or binary).")
 parser.add_argument("x_tiles", type=int, help="The number of tiles in the x axis.")
-parser.add_argument("y_tiles", type=int, help="The number of tiles in the y axis.")
+parser.add_argument("y_tiles", type=int, help="The number of tiles in the y axis. The y axis points up.")
 parser.add_argument("z_tiles", type=int, help="The number of tiles in the z axis.")
-parser.add_argument("directory", help="The directory where to save the tiles and the manifest. The directory must exist as this script won't create it.")
+parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary PLY format.")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
 
 args = parser.parse_args()

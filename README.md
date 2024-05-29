@@ -8,3 +8,7 @@ Software that cuts point clouds in tiles.
 
 1. Install the lastest version of [Python 3.12](https://www.python.org/downloads/) and `pip`
 2. Install the required Python packages : `pip install -r requirements.txt`
+
+## Usage
+
+Run the command `python src/uniform.py -h` to see details concerning usage.
