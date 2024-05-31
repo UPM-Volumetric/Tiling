@@ -12,7 +12,7 @@ parser.add_argument("file", help="The point cloud file to tile. Only PLY files (
 parser.add_argument("x_tiles", type=int, help="The number of tiles in the x axis.")
 parser.add_argument("y_tiles", type=int, help="The number of tiles in the y axis. The y axis points up.")
 parser.add_argument("z_tiles", type=int, help="The number of tiles in the z axis.")
-parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary PLY format.")
+parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format.")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
 
 args = parser.parse_args()
@@ -67,7 +67,8 @@ for x in range(0, args.x_tiles):
 
                 path = os.path.join(args.directory, f"tile_{i}.ply")
                 
-                PlyData([element]).write(path)
+                # The byte order needs to be little endian for our Unity viewer
+                PlyData([element], byte_order="<").write(path)
 
                 i += 1
 
