@@ -12,8 +12,9 @@ parser.add_argument("file", help="The point cloud file to tile. Only PLY files (
 parser.add_argument("x_tiles", type=int, help="The number of tiles in the x axis.")
 parser.add_argument("y_tiles", type=int, help="The number of tiles in the y axis. The y axis points up.")
 parser.add_argument("z_tiles", type=int, help="The number of tiles in the z axis.")
-parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format.")
+parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format. This does not affect the segment path in the manifest (see the tiles_prefix arg).")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
+parser.add_argument("-p", "--tiles_prefix", default="", help="The prefix to use before the segment name in the manifest.")
 
 args = parser.parse_args()
 
@@ -65,12 +66,10 @@ for x in range(0, args.x_tiles):
                 # Save the PLY
                 element = PlyElement.describe(numpy.array(tile), "vertex")
 
-                path = os.path.join(args.directory, f"tile_{i}.ply")
+                filePath = os.path.join(args.directory, f"tile_{i}.ply")
                 
                 # The byte order needs to be little endian for our Unity viewer
-                PlyData([element], byte_order="<").write(path)
-
-                i += 1
+                PlyData([element], byte_order="<").write(filePath)
 
                 # Update the manifest
 
@@ -79,6 +78,8 @@ for x in range(0, args.x_tiles):
                 yy = (y * y_size) + (y_size / 2) + y_min
                 zz = (z * z_size) + (z_size / 2) + z_min
 
+                segmentPath = os.path.join(args.tiles_prefix, f"tile_{i}.ply")
+
                 manifest["tiles"].append({
                     "x": xx,
                     "y": yy,
@@ -86,8 +87,10 @@ for x in range(0, args.x_tiles):
                     "width": x_size,
                     "height": y_size,
                     "depth": z_size,
-                    "segment": path,
+                    "segment": segmentPath,
                 })
+
+                i += 1
 
 # Export the manifest
 with open(args.manifest, "w") as file:
