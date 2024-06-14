@@ -11,4 +11,4 @@ Software that cuts point clouds in tiles.
 
 ## Usage
 
-Run the command `python src/uniform.py -h` to see details concerning usage.
+Run the commands `python src/uniform.py -h` or `python src/lod.py -h` to see details concerning usage.
