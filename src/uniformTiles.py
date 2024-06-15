@@ -2,6 +2,7 @@ import math
 import numpy
 from plyfile import PlyData
 
+from representation import Representation
 from tile import Tile
 
 class UniformTiles:
@@ -71,7 +72,9 @@ class UniformTiles:
                         y = (j * y_size) + (y_size / 2) + y_min
                         z = (k * z_size) + (z_size / 2) + z_min
 
-                        tile = Tile(numpy.array(points), x, y, z, x_size, y_size, z_size)
+                        representation = Representation(numpy.array(points))
+                        tile = Tile([representation], x, y, z, x_size, y_size, z_size)
+
                         tiles.append(tile)
 
         return tiles
