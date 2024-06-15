@@ -4,6 +4,7 @@ import os
 from plyfile import PlyData
 
 from uniformTiles import UniformTiles
+from levelsOfDetails import LevelsOfDetails
 
 # Arguments
 parser = argparse.ArgumentParser(description="Cuts a point cloud file into uniform tiles and optionnally generates their levels of details.")
@@ -25,6 +26,13 @@ cloud = PlyData.read(args.file)
 # Cut the tiles
 tiler = UniformTiles(cloud, args.x_tiles, args.y_tiles, args.z_tiles)
 tiles = tiler.make_tiles()
+
+# Make the levels of details if requested
+lod = LevelsOfDetails()
+
+for i in range(0, len(tiles)):
+    tile = tiles[i]
+    tiles[i] = lod.make_lod(tile, 10)
 
 # Build the manifest and save the tiles
 i = 0
