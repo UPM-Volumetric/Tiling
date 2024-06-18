@@ -1,4 +1,3 @@
-import math
 import numpy
 from plyfile import PlyData
 
@@ -26,12 +25,12 @@ class UniformTiles:
         vertex = self.cloud["vertex"]
 
         # Find the min and the max of the point cloud
-        x_min = min(vertex["x"])
-        x_max = max(vertex["x"])
-        y_min = min(vertex["y"])
-        y_max = max(vertex["y"])
-        z_min = min(vertex["z"])
-        z_max = max(vertex["z"])
+        x_min = vertex["x"].min()
+        x_max = vertex["x"].max()
+        y_min = vertex["y"].min()
+        y_max = vertex["y"].max()
+        z_min = vertex["z"].min()
+        z_max = vertex["z"].max()
 
         # Get the size of the tiles for each axis
         x_size = (x_max - x_min) / self.x_tiles
@@ -39,42 +38,37 @@ class UniformTiles:
         z_size = (z_max - z_min) / self.z_tiles
 
         # Create the tiles
-        tilesPoints = numpy.empty((self.x_tiles, self.y_tiles, self.z_tiles), list)
-
-        # Assign the points to the corresponding tile
-        for point in vertex:
-            x = math.floor((point["x"] - x_min) / x_size)
-            y = math.floor((point["y"] - y_min) / y_size)
-            z = math.floor((point["z"] - z_min) / z_size)
-
-            # The points that are at the edge of the last bin are included in the last bin
-            x = min(x, self.x_tiles - 1)
-            y = min(y, self.y_tiles - 1)
-            z = min(z, self.z_tiles - 1)
-
-            if tilesPoints[x, y, z] == None:
-                tilesPoints[x, y, z] = list()
-            
-            tilesPoints[x, y, z].append(point)
-
         tiles = list()
 
-        # Turn the list points into tiles
+        # Assign the points to the corresponding tile
+        x = numpy.floor((vertex["x"] - x_min) / x_size)
+        # The points that are at the edge of the last bin are included in the last bin
+        x = numpy.clip(x, None, self.x_tiles - 1)
+
+        y = numpy.floor((vertex["y"] - y_min) / y_size)
+        y = numpy.clip(y, None, self.y_tiles - 1)
+
+        z = numpy.floor((vertex["z"] - z_min) / z_size)
+        z = numpy.clip(z, None, self.z_tiles - 1)
+
         for i in range(0, self.x_tiles):
             for j in range(0, self.y_tiles):
                 for k in range(0, self.z_tiles):
-                    points = tilesPoints[i, j, k]
+                    # Get the index of the points for this tile
+                    indices = numpy.where((x == i) & (y == j) & (z == k))
+                    # Get the points for this tile
+                    points = vertex[indices]
 
                     # If there are points in the tile
-                    if points != None:
+                    if len(points) != 0:
                         # Get the center of the tile
-                        x = (i * x_size) + (x_size / 2) + x_min
-                        y = (j * y_size) + (y_size / 2) + y_min
-                        z = (k * z_size) + (z_size / 2) + z_min
+                        cx = (i * x_size) + (x_size / 2) + x_min
+                        cy = (j * y_size) + (y_size / 2) + y_min
+                        cz = (k * z_size) + (z_size / 2) + z_min
+                        
+                        representation = Representation(points)
 
-                        representation = Representation(numpy.array(points))
-                        tile = Tile([representation], x, y, z, x_size, y_size, z_size)
-
+                        tile = Tile([representation], cx, cy, cz, x_size, y_size, z_size)
                         tiles.append(tile)
 
         return tiles
