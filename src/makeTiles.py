@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from plyfile import PlyData
+from timeit import default_timer as timer
 
 from uniformTiles import UniformTiles
 from levelsOfDetails import LevelsOfDetails
@@ -19,6 +20,8 @@ parser.add_argument("-p", "--tiles_prefix", default="", help="The prefix to use 
 parser.add_argument("-l", "--lod", type=float, nargs="+", required=True, help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
 
 args = parser.parse_args()
+
+start = timer()
 
 # Load the point cloud
 cloud = PlyData.read(args.file)
@@ -50,3 +53,6 @@ for tile in lods:
 # Save the manifest
 with open(args.manifest, "w") as file:
     json.dump(manifest, file)
+
+end = timer()
+print("Time elapsed:", end - start)

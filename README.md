@@ -1,6 +1,6 @@
 # Tiling
 
-Software that cuts point clouds in tiles.
+Software that cuts point clouds in tiles and generate levels of details (LOD).
 
 [Read or cite our paper](https://github.com/UPM-Volumetric/.github/blob/main/profile/README.md)
 
@@ -11,4 +11,4 @@ Software that cuts point clouds in tiles.
 
 ## Usage
 
-Run the commands `python src/uniform.py -h` or `python src/lod.py -h` to see details concerning usage.
+Run the command `python src/makeTiles.py -h` to see details concerning usage.
