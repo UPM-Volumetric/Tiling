@@ -4,20 +4,31 @@ import os
 from plyfile import PlyData
 from timeit import default_timer as timer
 
-from uniformTiles import UniformTiles
+from uniformDensity import UniformDensity
+from uniformSize import UniformSize
 from levelsOfDetails import LevelsOfDetails
 
-# Arguments
-parser = argparse.ArgumentParser(description="Cuts a point cloud file into uniform tiles and optionnally generates their levels of details.")
+# Common arguments
+parser = argparse.ArgumentParser(description="Cuts a point cloud file into tiles and optionnally generates their levels of details using uniform subsampling.")
+subparsers = parser.add_subparsers(dest="tile_strategy")
 
 parser.add_argument("file", help="The point cloud file to tile. Only PLY files (.ply) are supported (ASCII or binary).")
-parser.add_argument("x_tiles", type=int, help="The number of tiles in the x axis.")
-parser.add_argument("y_tiles", type=int, help="The number of tiles in the y axis. The y axis points up.")
-parser.add_argument("z_tiles", type=int, help="The number of tiles in the z axis.")
 parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format. This does not affect the segment path in the manifest (see the tiles_prefix arg).")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
+parser.add_argument("-l", "--lod", type=float, nargs="+", default=[1.0], help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
 parser.add_argument("-p", "--tiles_prefix", default="", help="The prefix to use before the segment name in the manifest.")
-parser.add_argument("-l", "--lod", type=float, nargs="+", required=True, help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
+
+# Arguments for uniform size tiling
+parser_uniform_size = subparsers.add_parser("uniform_size", description="Cuts the point cloud into uniform size tiles.")
+
+parser_uniform_size.add_argument("x_tiles", type=int, help="The number of tiles in the x axis.")
+parser_uniform_size.add_argument("y_tiles", type=int, help="The number of tiles in the y axis. The y axis points up.")
+parser_uniform_size.add_argument("z_tiles", type=int, help="The number of tiles in the z axis.")
+
+# Arguments for uniform density tiling
+parser_uniform_density = subparsers.add_parser("uniform_density", description="Cuts the point cloud into uniform density tiles using an octree.")
+
+parser_uniform_density.add_argument("max_points", type=int, help="The maximum number of points per tile.")
 
 args = parser.parse_args()
 
@@ -27,7 +38,11 @@ start = timer()
 cloud = PlyData.read(args.file)
 
 # Cut the tiles
-tiler = UniformTiles(cloud, args.x_tiles, args.y_tiles, args.z_tiles)
+if args.tile_strategy == "uniform_size":
+    tiler = UniformSize(cloud, args.x_tiles, args.y_tiles, args.z_tiles)
+else:
+    tiler = UniformDensity(cloud, args.max_points)
+
 tiles = tiler.make_tiles()
 
 # Make the levels of details

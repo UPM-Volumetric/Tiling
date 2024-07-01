@@ -1,11 +1,12 @@
 import numpy
 from plyfile import PlyData
 
+from Tiling import Tiling
 from representation import Representation
 from tile import Tile
 
-class UniformTiles:
-    """Cuts a point cloud into uniform tiles"""
+class UniformSize(Tiling):
+    """Cuts a point cloud into uniform size tiles"""
 
     def __init__(self, cloud:PlyData, x_tiles:int, y_tiles:int, z_tiles:int) -> None:
         """Constructor
