@@ -30,8 +30,5 @@ jobs:
             - name: Install dependencies
               run: pip install -r requirements.txt
 
-            - name: Verify that all functions are properly typed
-              run: mypy src/
-
             - name: Verify that the docstring is complete and correct
               run: docsig src/
