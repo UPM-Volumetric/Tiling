@@ -1,4 +1,4 @@
-from representation import Representation
+from tile.representation import Representation
 
 class Tile:
     """A tile of a point cloud"""

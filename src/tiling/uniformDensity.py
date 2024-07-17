@@ -1,9 +1,9 @@
 import numpy
 from plyfile import PlyData
 
-from Tiling import Tiling
-from representation import Representation
-from tile import Tile
+from tiling.Tiling import Tiling
+from tile.representation import Representation
+from tile.tile import Tile
 
 class UniformDensity(Tiling):
     """Cuts a point cloud into uniform density tiles"""

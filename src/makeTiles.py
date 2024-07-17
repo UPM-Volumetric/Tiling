@@ -5,10 +5,10 @@ import typing
 from plyfile import PlyData
 from timeit import default_timer as timer
 
-from Tiling import Tiling
-from uniformDensity import UniformDensity
-from uniformSize import UniformSize
-from levelsOfDetails import LevelsOfDetails
+from tiling.Tiling import Tiling
+from tiling.uniformDensity import UniformDensity
+from tiling.uniformSize import UniformSize
+from tiling.levelsOfDetails import LevelsOfDetails
 
 # Common arguments
 parser = argparse.ArgumentParser(description="Cuts a point cloud file into tiles and optionnally generates their levels of details using uniform subsampling.")

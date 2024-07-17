@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from tile import Tile
+from tile.tile import Tile
 
 class Tiling:
 

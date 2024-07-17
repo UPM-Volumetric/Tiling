@@ -1,7 +1,7 @@
 import numpy
 
-from representation import Representation
-from tile import Tile
+from tile.representation import Representation
+from tile.tile import Tile
 
 class LevelsOfDetails:
     """Generates levels of details of a tile"""
