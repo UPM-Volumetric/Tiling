@@ -22,9 +22,8 @@ class UniformDensity(Tiling):
     def make_tiles(self) -> list[Tile]:
         vertex = self.cloud["vertex"]
 
-        # TODO Dont slice the point cloud if it has less than max_points
-
-        self.iterate(vertex)
+        if (len(vertex) > self.max_points):
+            self.iterate(vertex)
 
         return self.tiles
 
