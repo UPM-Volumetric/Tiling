@@ -17,18 +17,23 @@ class UniformDensity(Tiling):
         """
         self.cloud = cloud
         self.set_max_points(max_points)
-        self.tiles = list()
+        self.tiles = list[Tile]()
 
     def make_tiles(self) -> list[Tile]:
         vertex = self.cloud["vertex"]
 
-        # Dont slice the point cloud if it has less than max_points
+        # TODO Dont slice the point cloud if it has less than max_points
 
         self.iterate(vertex)
 
         return self.tiles
 
-    def iterate(self, vertex):
+    def iterate(self, vertex:PlyData) -> None:
+        """Recursively cuts a point cloud into eight tiles using an octree, until the tiles have at most `max_points`.
+
+        Args:
+            vertex (PlyData): The point cloud
+        """
         # Find the bounding box of the point cloud
         x_min = vertex["x"].min()
         x_max = vertex["x"].max()
@@ -53,7 +58,7 @@ class UniformDensity(Tiling):
 
         z = numpy.floor((vertex["z"] - z_min) / z_size)
         z = numpy.clip(z, None, 1)
-        
+
         for i in range(0, 2):
             for j in range(0, 2):
                 for k in range(0, 2):
@@ -76,7 +81,7 @@ class UniformDensity(Tiling):
                         tile = Tile([representation], cx, cy, cz, x_size, y_size, z_size)
                         self.tiles.append(tile)
 
-    def set_max_points(self, max_points:int):
+    def set_max_points(self, max_points:int) -> None:
         """Sets the maximum number of points in each tile
 
         Args:

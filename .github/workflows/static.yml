@@ -1,0 +1,37 @@
+name: Static analysis
+
+on:
+    push:
+        paths:
+            - "src/**"
+            - "mypy.ini"
+            - "requirements.txt"
+    pull_request:
+        paths:
+            - "src/**"
+            - "mypy.ini"
+            - "requirements.txt"
+    workflow_dispatch:
+
+jobs:
+    static:
+        name: Static Analysis
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.12"
+            
+            - name: Install dependencies
+              run: pip install -r requirements.txt
+
+            - name: Verify that all functions are properly typed
+              run: mypy src/
+
+            - name: Verify that the docstring is complete and correct
+              run: docsig src/

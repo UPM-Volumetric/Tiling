@@ -74,7 +74,7 @@ class UniformSize(Tiling):
 
         return tiles
 
-    def set_x_tiles(self, x_tiles:int):
+    def set_x_tiles(self, x_tiles:int) -> None:
         """Sets the number of tiles for the x axis
 
         Args:
@@ -88,7 +88,7 @@ class UniformSize(Tiling):
         
         self.x_tiles = x_tiles
     
-    def set_y_tiles(self, y_tiles:int):
+    def set_y_tiles(self, y_tiles:int) -> None:
         """Sets the number of tiles for the y axis
 
         Args:
@@ -102,7 +102,7 @@ class UniformSize(Tiling):
         
         self.y_tiles = y_tiles
 
-    def set_z_tiles(self, z_tiles:int):
+    def set_z_tiles(self, z_tiles:int) -> None:
         """Sets the number of tiles for the z axis
 
         Args:

@@ -1,9 +1,11 @@
 import argparse
 import json
 import os
+import typing
 from plyfile import PlyData
 from timeit import default_timer as timer
 
+from Tiling import Tiling
 from uniformDensity import UniformDensity
 from uniformSize import UniformSize
 from levelsOfDetails import LevelsOfDetails
@@ -15,8 +17,8 @@ subparsers = parser.add_subparsers(dest="tile_strategy")
 parser.add_argument("file", help="The point cloud file to tile. Only PLY files (.ply) are supported (ASCII or binary).")
 parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format. This does not affect the segment path in the manifest (see the tiles_prefix arg).")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
-parser.add_argument("-l", "--lod", type=float, nargs="+", default=[1.0], help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
 parser.add_argument("-p", "--tiles_prefix", default="", help="The prefix to use before the segment name in the manifest.")
+parser.add_argument("-l", "--lod", type=float, action="append", default=[1.0], help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
 
 # Arguments for uniform size tiling
 parser_uniform_size = subparsers.add_parser("uniform_size", description="Cuts the point cloud into uniform size tiles.")
@@ -38,6 +40,8 @@ start = timer()
 cloud = PlyData.read(args.file)
 
 # Cut the tiles
+tiler:Tiling
+
 if args.tile_strategy == "uniform_size":
     tiler = UniformSize(cloud, args.x_tiles, args.y_tiles, args.z_tiles)
 else:
@@ -54,7 +58,7 @@ for tile in tiles:
 
 # Build the manifest and save the tiles
 i = 0
-manifest = {"tiles": []}
+manifest:dict[str, typing.Any] = {"tiles": []}
 
 for tile in lods:
     file_path = os.path.join(args.directory, f"tile_{i}")
