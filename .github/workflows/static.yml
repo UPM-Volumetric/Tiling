@@ -3,11 +3,13 @@ name: Static analysis
 on:
     push:
         paths:
+            - ".github/**"
             - "src/**"
             - "mypy.ini"
             - "requirements.txt"
     pull_request:
         paths:
+            - ".github/**"
             - "src/**"
             - "mypy.ini"
             - "requirements.txt"
