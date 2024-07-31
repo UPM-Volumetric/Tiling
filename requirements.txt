@@ -1,3 +1,4 @@
 numpy==1.26.4
 plyfile==1.0.3
 docsig==0.59.1
+DracoPy==1.4.0

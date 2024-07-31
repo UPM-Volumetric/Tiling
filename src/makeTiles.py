@@ -5,6 +5,7 @@ import typing
 from plyfile import PlyData
 from timeit import default_timer as timer
 
+from tile.tile import Tile
 from tiling.Tiling import Tiling
 from tiling.uniformDensity import UniformDensity
 from tiling.uniformSize import UniformSize
@@ -16,6 +17,7 @@ subparsers = parser.add_subparsers(dest="tile_strategy")
 
 parser.add_argument("file", help="The point cloud file to tile. Only PLY files (.ply) are supported (ASCII or binary).")
 parser.add_argument("directory", help="The directory where to save the tiles. The directory must exist as this script won't create it. The tiles are saved in a binary little endian PLY format. This does not affect the segment path in the manifest (see the tiles_prefix arg).")
+parser.add_argument("format", choices=["ply", "drc"], help="The file format for the tiles. Use ply for Polygon Format and drc for Draco compression.")
 parser.add_argument("manifest", help="The path where to save the JSON manifest.")
 parser.add_argument("-p", "--tiles_prefix", default="", help="The prefix to use before the segment name in the manifest.")
 parser.add_argument("-l", "--lod", type=float, action="append", default=[1.0], help="One or more subsampling ratios for the level of details of each tile. E.g. a ratio of 2 will generate a LOD with half the points.")
@@ -51,7 +53,7 @@ tiles = tiler.make_tiles()
 
 # Make the levels of details
 lod = LevelsOfDetails()
-lods = []
+lods = list[Tile]()
 
 for tile in tiles:
     lods.append(lod.make_lods(tile, args.lod))
@@ -64,7 +66,7 @@ for tile in lods:
     file_path = os.path.join(args.directory, f"tile_{i}")
     segment_path = os.path.join(args.tiles_prefix, f"tile_{i}")
     
-    tile.save(file_path, byte_order="<")
+    tile.save(args.format, file_path, byte_order="<")
     manifest["tiles"].append(tile.manifest(segment_path))
 
     i += 1

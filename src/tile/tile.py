@@ -23,19 +23,22 @@ class Tile:
         self.y_size = y_size
         self.z_size = z_size
 
-    def save(self, path_prefix:str, text:bool = False, byte_order:str = "=") -> None:
+    def save(self, format:str, path_prefix:str, text:bool = False, byte_order:str = "=") -> None:
         """Saves the representations of the tile as PLY files. The representations will have the following name `<path_prefix>_{i}.ply`.
 
         Args:
+            format (str): The format in wich to save the tile. Use `ply` to save the tile in Polygon format. Use `drc` to compress the tile using Draco.
             path_prefix (str): The path where to save the tile without the extension
             text (bool, optional): Whether the resulting PLY file will be text (True) or binary (False). Defaults to False.
             byte_order (str, optional): `<` for little-endian, `>` for big-endian, or `=` for native. This is only relevant if text is False. Defaults to "=".
         """
+        self.format = format
+
         for i in range(0, len(self.representations)):
             representation = self.representations[i]
-            file_path = path_prefix + f"_{i}.ply"
+            file_path = path_prefix + f"_{i}.{format}"
 
-            representation.save(file_path, text, byte_order)
+            representation.save(format, file_path, text, byte_order)
 
     def manifest(self, segment_prefix:str) -> dict:
         """Returns the manifest representation of the tile
@@ -50,7 +53,7 @@ class Tile:
 
         for i in range(0, len(self.representations)):
             representation = self.representations[i]
-            segment_path = segment_prefix + f"_{i}.ply"
+            segment_path = segment_prefix + f"_{i}.{self.format}"
 
             representations.append(representation.manifest(segment_path))
 
