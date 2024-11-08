@@ -43,6 +43,6 @@ class Representation:
             dict: JSON data to write in the manifest
         """
         return {
-            "points": len(self.points),
+            "pointCount": len(self.points),
             "segment": segment_path
         }

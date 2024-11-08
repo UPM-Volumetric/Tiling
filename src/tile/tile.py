@@ -58,9 +58,11 @@ class Tile:
             representations.append(representation.manifest(segment_path))
 
         return {
-            "x": self.x,
-            "y": self.y,
-            "z": self.z,
+            "position": {
+                "x": self.x,
+                "y": self.y,
+                "z": self.z,
+            },
             "width": self.x_size,
             "height": self.y_size,
             "depth": self.z_size,

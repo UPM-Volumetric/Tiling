@@ -60,14 +60,18 @@ for tile in tiles:
 
 # Build the manifest and save the tiles
 i = 0
-manifest:dict[str, typing.Any] = {"tiles": []}
+manifest:dict[str, typing.Any] = {
+    "frames": [{
+        "tiles": []
+    }]
+}
 
 for tile in lods:
-    file_path = os.path.join(args.directory, f"tile_{i}")
-    segment_path = os.path.join(args.tiles_prefix, f"tile_{i}")
+    file_path = os.path.join(args.directory, f"frame_0_tile_{i}")
+    segment_path = os.path.join(args.tiles_prefix, f"frame_0_tile_{i}")
     
     tile.save(args.format, file_path, byte_order="<")
-    manifest["tiles"].append(tile.manifest(segment_path))
+    manifest["frames"][0]["tiles"].append(tile.manifest(segment_path))
 
     i += 1
 
